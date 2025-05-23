@@ -1,6 +1,7 @@
 <?php
 include 'db.php';
 
+// deleta a agenda com base no id passado por GET
 $id = $_GET['id'];
 $sql = "DELETE FROM agendas WHERE id=$id";
 $resultado = $conn->query($sql);
@@ -17,6 +18,7 @@ $resultado = $conn->query($sql);
 
 <div class="container mt-5">
     <?php if ($resultado): ?>
+        // exibe mensagem de sucesso ou erro
         <div class="alert alert-success">
             Agenda excluída com sucesso. <a href="index.php" class="btn btn-sm btn-success ms-3">Voltar</a>
         </div>

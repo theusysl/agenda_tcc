@@ -8,7 +8,7 @@ $row = $result->fetch_assoc();
 
 // atualiza os dados se o formulário for enviado
 if (isset($_POST['atualizar'])) {
-    // atualiza todos os campos da agenda usando prepared statements
+    // atualiza todos os campos da agenda usando statements preparados
     $sql = "UPDATE agendas SET 
         data_hora=?, local=?, prof_orientador=?, prof_convidado1=?, prof_convidado2=?, 
         aluno1=?, aluno2=?, aluno3=?, nota_final=?, aprovado=?, curso=?, cidade=?
