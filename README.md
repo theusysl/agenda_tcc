@@ -2,7 +2,7 @@
 projeto em PHP com um propósito de demonstrar o  uso de diversos recursos php.
 
 ## tutorial para executar o banco de dados
-acessar o phpMyAdmin (http://localhost/phpmyadmin/index.php?route=/server/databases), criar um novo banco (base de dados) chamado: agenda_tcc e executar os comandos do scriptbd.sql
+acessar o phpMyAdmin (http://localhost/phpmyadmin/index.php?route=/server/databases), criar um novo banco (base de dados) chamado: agenda_tcc e importar o arquivo agenda_tcc.sql
 
 ## acessar o site
 http://localhost/agenda_tcc/index.php

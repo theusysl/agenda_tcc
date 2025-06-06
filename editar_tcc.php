@@ -21,10 +21,6 @@ $professores = $conn->query("SELECT id, nome FROM professor");
 
 // Se formulário enviado
 if (isset($_POST['salvar'])) {
-    // Trata campos opcionais
-    $aluno2 = empty($_POST['aluno2_ra']) ? null : $_POST['aluno2_ra'];
-    $aluno3 = empty($_POST['aluno3_ra']) ? null : $_POST['aluno3_ra'];
-
     $stmt = $conn->prepare("
         UPDATE agendas SET
             tcc_id = ?, tipo_tcc_id = ?, aluno1_ra = ?, aluno2_ra = ?, aluno3_ra = ?,
@@ -32,6 +28,10 @@ if (isset($_POST['salvar'])) {
             nota_final = ?, aprovado = ?, curso = ?, cidade = ?
         WHERE id = ?
     ");
+
+    // Trata campos opcionais
+    $aluno2 = empty($_POST['aluno2_ra']) ? null : $_POST['aluno2_ra'];
+    $aluno3 = empty($_POST['aluno3_ra']) ? null : $_POST['aluno3_ra'];
 
     $stmt->bind_param(
         "iiiiisssisdsssi",
@@ -85,7 +85,7 @@ if (isset($_POST['salvar'])) {
             </select>
         </div>
 
-        <!-- Campos herdados (inputs ocultos) -->
+        <!-- Campos herdados (exibidos como inputs ocultos ou text) -->
         <input type="hidden" name="tipo_tcc_id" value="<?= $agenda['tipo_tcc_id'] ?>">
         <input type="hidden" name="aluno1_ra" value="<?= $agenda['aluno1_ra'] ?>">
         <input type="hidden" name="aluno2_ra" value="<?= $agenda['aluno2_ra'] ?>">
@@ -152,7 +152,7 @@ if (isset($_POST['salvar'])) {
 
         <!-- Botões -->
         <div class="col-12 d-flex justify-content-between">
-            <a href="index.php" class="btn btn-dark">Cancelar</a>
+            <a href="index.php" class="btn btn-secondary">Cancelar</a>
             <button type="submit" name="salvar" class="btn btn-dark">Salvar Alterações</button>
         </div>
     </form>
