@@ -1,5 +1,5 @@
 <?php
-    // configuração de conexão com o banco de dados mysql usando mysqli
+    // configuração de conexão com o banco de dados mysql
     $host = 'localhost';
     $db = 'agenda_tcc';
     $user = 'root';

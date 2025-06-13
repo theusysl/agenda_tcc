@@ -13,6 +13,7 @@ $tccData = null;
 if (isset($_POST['tcc_id'])) {
     $tcc_id = $_POST['tcc_id'];
 
+    // Busca dados completos do TCC selecionado
     $stmt = $conn->prepare("
         SELECT tcc.*, 
                a1.nome AS aluno1_nome, 
@@ -39,9 +40,11 @@ $professores = $conn->query("SELECT id, nome FROM professor");
 // Se formulário final enviado
 if (isset($_POST['salvar'])) {
 
+    // Trata alunos 2 e 3 como null se não informados
     $aluno2 = empty($_POST['aluno2_ra']) ? null : $_POST['aluno2_ra'];
     $aluno3 = empty($_POST['aluno3_ra']) ? null : $_POST['aluno3_ra'];
     
+    // Prepara inserção da agenda
     $stmt = $conn->prepare("
         INSERT INTO agendas (
             tcc_id, tipo_tcc_id, aluno1_ra, aluno2_ra, aluno3_ra, prof_orientador_id,
@@ -50,6 +53,7 @@ if (isset($_POST['salvar'])) {
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ");
 
+    // Associa parâmetros ao statement
     $stmt->bind_param(
         "iiiiisssisdsss",
         $_POST['tcc_id'],
@@ -68,6 +72,7 @@ if (isset($_POST['salvar'])) {
         $_POST['cidade']
     );    
 
+    // Executa e exibe mensagem de sucesso ou erro
     if ($stmt->execute()) {
         echo "<div class='alert alert-success mt-4 text-center'>Agenda cadastrada com sucesso!</div>";
     } else {
@@ -117,19 +122,19 @@ if (isset($_POST['salvar'])) {
         <input type="hidden" name="prof_orientador_id" value="<?= $tccData['professor_orientador_id'] ?>">
         <input type="hidden" name="curso" value="<?= $tccData['curso'] ?>">
 
-        <!-- Data e hora -->
+        <!-- Data e hora da apresentação -->
         <div class="col-md-6">
             <label class="form-label">Data e Hora</label>
             <input type="datetime-local" name="data_hora" class="form-control" required>
         </div>
 
-        <!-- Local -->
+        <!-- Local da apresentação -->
         <div class="col-md-6">
             <label class="form-label">Local</label>
             <input type="text" name="local" class="form-control" required>
         </div>
 
-        <!-- Professores convidados -->
+        <!-- Seleção dos professores convidados -->
         <div class="col-md-6">
             <label class="form-label">Professor Convidado 1</label>
             <select name="prof_convidado1_id" class="form-select" required>
@@ -141,12 +146,7 @@ if (isset($_POST['salvar'])) {
         </div>
 
         <div class="col-md-6">
-            <label class="form-label">Professor Convidado 2</label>
-            <select name="prof_convidado2_id" class="form-select" required>
-                <option value="">-- Selecione --</option>
-                <?php $professores->data_seek(0); while ($p = $professores->fetch_assoc()): ?>
-                    <option value="<?= $p['id'] ?>"><?= $p['nome'] ?></option>
-                <?php endwhile; ?>
+            <label class
             </select>
         </div>
 

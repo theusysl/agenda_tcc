@@ -1,4 +1,4 @@
-<?php include 'db.php'; ?>
+<?php include 'db.php'; // Inclui o arquivo de conexão com o banco de dados ?>
 
 <!DOCTYPE html>
 <html>
@@ -39,23 +39,27 @@
     </form>
 
     <?php
+    // Verifica se o formulário foi enviado
     if (isset($_POST['salvar'])) {
-        $ra = intval($_POST['ra']);
-        $nome = $_POST['nome'];
-        $curso = $_POST['curso'];
+        $ra = intval($_POST['ra']); // Obtém o RA como inteiro
+        $nome = $_POST['nome'];     // Obtém o nome do aluno
+        $curso = $_POST['curso'];   // Obtém o curso do aluno
 
-        // Verifica se já existe RA
+        // Verifica se já existe RA cadastrado
         $check = $conn->prepare("SELECT 1 FROM aluno WHERE ra = ?");
         $check->bind_param("i", $ra);
         $check->execute();
         $check->store_result();
 
+        // Se já existe, exibe mensagem de erro
         if ($check->num_rows > 0) {
             echo "<div class='alert alert-danger mt-4'>Já existe um aluno com o RA <strong>$ra</strong>.</div>";
         } else {
+            // Insere novo aluno no banco de dados
             $stmt = $conn->prepare("INSERT INTO aluno (ra, nome, curso) VALUES (?, ?, ?)");
             $stmt->bind_param("iss", $ra, $nome, $curso);
 
+            // Verifica se a inserção foi bem-sucedida
             if ($stmt->execute()) {
                 echo "<div class='alert alert-success mt-4'>Aluno cadastrado com sucesso!</div>";
             } else {

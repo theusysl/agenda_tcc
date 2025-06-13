@@ -1,7 +1,7 @@
 <?php
 include 'db.php';
 
-// Carrega dropdowns
+// Carrega dropdowns de alunos, professores e tipos de TCC
 $alunos = $conn->query("SELECT ra, nome FROM aluno");
 $professores = $conn->query("SELECT id, nome FROM professor");
 $tipos = $conn->query("SELECT id, descricao FROM tipo_tcc");
@@ -11,11 +11,13 @@ if (isset($_POST['salvar'])) {
     $aluno2 = empty($_POST['aluno2_ra']) ? null : $_POST['aluno2_ra'];
     $aluno3 = empty($_POST['aluno3_ra']) ? null : $_POST['aluno3_ra'];
 
+    // Prepara a query de inserção do novo TCC
     $stmt = $conn->prepare("
         INSERT INTO tcc (titulo, tipo_tcc_id, aluno1_ra, aluno2_ra, aluno3_ra, professor_orientador_id, curso)
         VALUES (?, ?, ?, ?, ?, ?, ?)
     ");
 
+    // Faz o bind dos parâmetros para a query preparada
     $stmt->bind_param(
         "siiiiss",
         $_POST['titulo'],
@@ -27,6 +29,7 @@ if (isset($_POST['salvar'])) {
         $_POST['curso']
     );
 
+    // Executa a query e exibe mensagem de sucesso ou erro
     if ($stmt->execute()) {
         echo "<div class='alert alert-success mt-4 text-center'>TCC cadastrado com sucesso!</div>";
     } else {
@@ -80,7 +83,7 @@ if (isset($_POST['salvar'])) {
             </select>
         </div>
 
-        <!-- Aluno 2 -->
+        <!-- Aluno 2 (opcional) -->
         <div class="col-md-4">
             <label class="form-label">Aluno 2 (opcional)</label>
             <select name="aluno2_ra" class="form-select">
@@ -91,7 +94,7 @@ if (isset($_POST['salvar'])) {
             </select>
         </div>
 
-        <!-- Aluno 3 -->
+        <!-- Aluno 3 (opcional) -->
         <div class="col-md-4">
             <label class="form-label">Aluno 3 (opcional)</label>
             <select name="aluno3_ra" class="form-select">
@@ -102,7 +105,7 @@ if (isset($_POST['salvar'])) {
             </select>
         </div>
 
-        <!-- Orientador -->
+        <!-- Professor Orientador -->
         <div class="col-md-6">
             <label class="form-label">Professor Orientador</label>
             <select name="professor_orientador_id" class="form-select" required>
@@ -113,7 +116,7 @@ if (isset($_POST['salvar'])) {
             </select>
         </div>
 
-        <!-- Botões -->
+        <!-- Botões de ação -->
         <div class="col-12 d-flex justify-content-between">
             <a href="tccs.php" class="btn btn-secondary">Voltar</a>
             <button type="submit" name="salvar" class="btn btn-primary">Salvar</button>

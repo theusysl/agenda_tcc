@@ -1,16 +1,21 @@
-<?php include 'db.php'; ?>
+<?php 
+// Inclui o arquivo de conexão com o banco de dados
+include 'db.php'; 
+?>
 
 <!DOCTYPE html>
 <html>
 <head>
     <title>Adicionar Professor</title>
     <meta charset="utf-8">
+    <!-- Importa o CSS do Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 <div class="container mt-5">
     <h2 class="mb-4">Registrar Novo Professor</h2>
 
+    <!-- Formulário para adicionar novo professor -->
     <form method="POST" class="row g-3">
 
         <!-- Nome -->
@@ -39,10 +44,14 @@
     </form>
 
     <?php
+    // Verifica se o formulário foi enviado
     if (isset($_POST['salvar'])) {
+        // Prepara a query para inserir um novo professor
         $stmt = $conn->prepare("INSERT INTO professor (nome, email, area_especializacao) VALUES (?, ?, ?)");
+        // Faz o bind dos parâmetros recebidos do formulário
         $stmt->bind_param("sss", $_POST['nome'], $_POST['email'], $_POST['area']);
 
+        // Executa a query e exibe mensagem de sucesso ou erro
         if ($stmt->execute()) {
             echo "<div class='alert alert-success mt-4'>Professor cadastrado com sucesso!</div>";
         } else {

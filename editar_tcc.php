@@ -9,18 +9,19 @@ $stmt->bind_param("i", $id);
 $stmt->execute();
 $agenda = $stmt->get_result()->fetch_assoc();
 
-// Carrega TCCs
+// Carrega TCCs para o dropdown
 $tccs = $conn->query("
     SELECT tcc.id, tcc.titulo, aluno.nome AS aluno_nome
     FROM tcc
     JOIN aluno ON tcc.aluno1_ra = aluno.ra
 ");
 
-// Carrega dados para dropdowns
+// Carrega professores para dropdowns
 $professores = $conn->query("SELECT id, nome FROM professor");
 
 // Se formulário enviado
 if (isset($_POST['salvar'])) {
+    // Prepara o UPDATE da agenda
     $stmt = $conn->prepare("
         UPDATE agendas SET
             tcc_id = ?, tipo_tcc_id = ?, aluno1_ra = ?, aluno2_ra = ?, aluno3_ra = ?,
@@ -29,10 +30,11 @@ if (isset($_POST['salvar'])) {
         WHERE id = ?
     ");
 
-    // Trata campos opcionais
+    // Trata campos opcionais de alunos
     $aluno2 = empty($_POST['aluno2_ra']) ? null : $_POST['aluno2_ra'];
     $aluno3 = empty($_POST['aluno3_ra']) ? null : $_POST['aluno3_ra'];
 
+    // Faz o bind dos parâmetros do formulário
     $stmt->bind_param(
         "iiiiisssisdsssi",
         $_POST['tcc_id'],
@@ -52,6 +54,7 @@ if (isset($_POST['salvar'])) {
         $id
     );
 
+    // Executa o update e redireciona ou exibe erro
     if ($stmt->execute()) {
         header("Location: index.php");
         exit;
@@ -72,7 +75,7 @@ if (isset($_POST['salvar'])) {
 <div class="container mt-5">
     <h2 class="mb-4">Editar Agenda de TCC</h2>
     <form method="POST" class="row g-3">
-        <!-- Título do TCC -->
+        <!-- Dropdown de TCCs -->
         <div class="col-md-12">
             <label class="form-label">TCC</label>
             <select name="tcc_id" class="form-select" required>
@@ -85,7 +88,7 @@ if (isset($_POST['salvar'])) {
             </select>
         </div>
 
-        <!-- Campos herdados (exibidos como inputs ocultos ou text) -->
+        <!-- Campos herdados (não editáveis, enviados como hidden) -->
         <input type="hidden" name="tipo_tcc_id" value="<?= $agenda['tipo_tcc_id'] ?>">
         <input type="hidden" name="aluno1_ra" value="<?= $agenda['aluno1_ra'] ?>">
         <input type="hidden" name="aluno2_ra" value="<?= $agenda['aluno2_ra'] ?>">
@@ -93,20 +96,20 @@ if (isset($_POST['salvar'])) {
         <input type="hidden" name="prof_orientador_id" value="<?= $agenda['prof_orientador_id'] ?>">
         <input type="hidden" name="curso" value="<?= $agenda['curso'] ?>">
 
-        <!-- Data e Hora -->
+        <!-- Data e Hora da apresentação -->
         <div class="col-md-6">
             <label class="form-label">Data e Hora</label>
             <input type="datetime-local" name="data_hora" class="form-control"
                    value="<?= date('Y-m-d\TH:i', strtotime($agenda['data_hora'])) ?>" required>
         </div>
 
-        <!-- Local -->
+        <!-- Local da apresentação -->
         <div class="col-md-6">
             <label class="form-label">Local</label>
             <input type="text" name="local" class="form-control" value="<?= $agenda['local'] ?>" required>
         </div>
 
-        <!-- Professores convidados -->
+        <!-- Dropdown de Professor Convidado 1 -->
         <div class="col-md-6">
             <label class="form-label">Professor Convidado 1</label>
             <select name="prof_convidado1_id" class="form-select" required>
@@ -119,6 +122,7 @@ if (isset($_POST['salvar'])) {
             </select>
         </div>
 
+        <!-- Dropdown de Professor Convidado 2 -->
         <div class="col-md-6">
             <label class="form-label">Professor Convidado 2</label>
             <select name="prof_convidado2_id" class="form-select" required>
@@ -131,12 +135,13 @@ if (isset($_POST['salvar'])) {
             </select>
         </div>
 
-        <!-- Nota e aprovação -->
+        <!-- Nota final do TCC -->
         <div class="col-md-4">
             <label class="form-label">Nota Final</label>
             <input type="number" step="0.01" name="nota_final" class="form-control" value="<?= $agenda['nota_final'] ?>">
         </div>
 
+        <!-- Situação de aprovação -->
         <div class="col-md-4">
             <label class="form-label">Aprovado?</label>
             <select name="aprovado" class="form-select" required>
@@ -145,12 +150,13 @@ if (isset($_POST['salvar'])) {
             </select>
         </div>
 
+        <!-- Cidade da apresentação -->
         <div class="col-md-4">
             <label class="form-label">Cidade</label>
             <input type="text" name="cidade" class="form-control" value="<?= $agenda['cidade'] ?>" required>
         </div>
 
-        <!-- Botões -->
+        <!-- Botões de ação -->
         <div class="col-12 d-flex justify-content-between">
             <a href="index.php" class="btn btn-secondary">Cancelar</a>
             <button type="submit" name="salvar" class="btn btn-dark">Salvar Alterações</button>
